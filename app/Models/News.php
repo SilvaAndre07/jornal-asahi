@@ -30,4 +30,8 @@ class News extends Model
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
+    public function image()
+{
+    return $this->hasMany(NewsImage::class, 'news_id');
+}
 }

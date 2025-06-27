@@ -18,11 +18,13 @@ class HomeController extends Controller
     public function index()
     {
         // Código existente para buscar notícias em destaque e ao vivo
-        $featuredNews = News::where('approved', true)
+        $featuredNews =      News::where('approved', true)
+                            -> with('image')
                             ->whereNotNull('published_at')
-                            ->orderBy('published_at', 'desc')
+                           ->orderBy('published_at', 'desc')
                             ->limit(5)
-                            ->get();
+                            ->get(); 
+
                             
         $latestNews = News::where('approved', true)
                           ->whereNotNull('published_at')

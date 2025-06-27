@@ -161,129 +161,30 @@
                     <div class="news-slider" id="newsSlider">
                         <div class="news-track" id="newsTrack">
                             <!-- Slide 1 -->
-                            <div class="news-slide">
+                            @foreach ($featuredNews as $index => $item)
+                            <div class="news-slide {{ $index === 0 ? 'active' : '' }}">
                                 <article class="news-card featured">
+                                    @if ($item->image)
                                     <div class="news-image">
-                                        <img src="/placeholder.svg?height=300&width=500" alt="Notícia Principal">
-                                        <div class="news-category">Política</div>
+                                        <img src="{{ asset('storage/' . $item->$image ) }}" alt="{{ $item->title }}">
                                     </div>
-                                    <div class="news-content">
-                                        <h3>Prefeitura anuncia novos investimentos em educação para 2024</h3>
-                                        <p>A administração municipal apresentou um plano ambicioso para modernizar as
-                                            escolas da cidade com novas tecnologias e infraestrutura, beneficiando mais
-                                            de 5 mil estudantes.</p>
-                                        <div class="news-meta">
-                                            <span class="news-date"><i class="fas fa-calendar"></i> Date</span>
-                                            <span class="news-author"><i class="fas fa-user"></i> Repórtere</span>
-                                        </div>
-                                        <a href="#" class="read-more">Ler mais <i class="fas fa-arrow-right"></i></a>
+                                    @else
+                                    <div class="no-image">
+                                        <span>Sem imagem</span>
                                     </div>
-                                </article>
-                            </div>
 
-                            <!-- Slide 2 -->
-                            <div class="news-slide">
-                                <article class="news-card featured">
-                                    <div class="news-image">
-                                        <img src="/placeholder.svg?height=300&width=500" alt="Festival">
-                                        <div class="news-category culture">Cultura</div>
-                                    </div>
+                                    @endif
                                     <div class="news-content">
-                                        <h3>Festival de Inverno movimenta economia local</h3>
-                                        <p>O evento cultural atraiu milhares de visitantes e gerou importante receita
-                                            para comerciantes e prestadores de serviços, consolidando Assaí como destino
-                                            turístico regional.</p>
+                                        <h3>{{ $item->title }}</h3>
+                                        <p>{{ Str::limit(html_entity_decode(strip_tags($item->content)), 100) }} </p>
                                         <div class="news-meta">
-                                            <span class="news-date"><i class="fas fa-calendar"></i> Date</span>
-                                            <span class="news-author"><i class="fas fa-user"></i>Repórtere</span>
+                                            <span class="news-date"><i class="fas fa-calendar"></i> {{ $item->published_at->format('d/m/Y H:i') }}</span>
+                                            <span class="news-author"><i class="fas fa-user"></i>{{ $item->author->name }}</span>
                                         </div>
                                         <a href="#" class="read-more">Ler mais <i class="fas fa-arrow-right"></i></a>
                                     </div>
                                 </article>
-                            </div>
-
-                            <!-- Slide 3 -->
-                            <div class="news-slide">
-                                <article class="news-card featured">
-                                    <div class="news-image">
-                                        <img src="/placeholder.svg?height=300&width=500" alt="Saúde">
-                                        <div class="news-category health">Saúde</div>
-                                    </div>
-                                    <div class="news-content">
-                                        <h3>Nova unidade de saúde será inaugurada no próximo mês</h3>
-                                        <p>A construção da UBS do bairro Vila Nova está em fase final e promete melhorar
-                                            significativamente o atendimento à população da região norte da cidade.</p>
-                                        <div class="news-meta">
-                                            <span class="news-date"><i class="fas fa-calendar"></i> Date</span>
-                                            <span class="news-author"><i class="fas fa-user"></i> Repórtere</span>
-                                        </div>
-                                        <a href="#" class="read-more">Ler mais <i class="fas fa-arrow-right"></i></a>
-                                    </div>
-                                </article>
-                            </div>
-
-                            <!-- Slide 4 -->
-                            <div class="news-slide">
-                                <article class="news-card featured">
-                                    <div class="news-image">
-                                        <img src="/placeholder.svg?height=300&width=500" alt="Esporte">
-                                        <div class="news-category sports">Esporte</div>
-                                    </div>
-                                    <div class="news-content">
-                                        <h3>Time local conquista título do campeonato regional</h3>
-                                        <p>A vitória histórica coloca Assaí no mapa do futebol regional e traz orgulho
-                                            para toda a comunidade esportiva, após uma temporada emocionante.</p>
-                                        <div class="news-meta">
-                                            <span class="news-date"><i class="fas fa-calendar"></i> Date</span>
-                                            <span class="news-author"><i class="fas fa-user"></i> Repórtere</span>
-                                        </div>
-                                        <a href="#" class="read-more">Ler mais <i class="fas fa-arrow-right"></i></a>
-                                    </div>
-                                </article>
-                            </div>
-
-                            <!-- Slide 5 -->
-                            <div class="news-slide">
-                                <article class="news-card featured">
-                                    <div class="news-image">
-                                        <img src="/placeholder.svg?height=300&width=500" alt="Economia">
-                                        <div class="news-category economy">Economia</div>
-                                    </div>
-                                    <div class="news-content">
-                                        <h3>Nova empresa gera 200 empregos na região</h3>
-                                        <p>A instalação da indústria representa um marco para o desenvolvimento
-                                            econômico local e geração de oportunidades, fortalecendo o setor industrial
-                                            da cidade.</p>
-                                        <div class="news-meta">
-                                            <span class="news-date"><i class="fas fa-calendar"></i> Date</span>
-                                            <span class="news-author"><i class="fas fa-user"></i> Repórtere</span>
-                                        </div>
-                                        <a href="#" class="read-more">Ler mais <i class="fas fa-arrow-right"></i></a>
-                                    </div>
-                                </article>
-                            </div>
-
-                            <!-- Slide 6 -->
-                            <div class="news-slide">
-                                <article class="news-card featured">
-                                    <div class="news-image">
-                                        <img src="/placeholder.svg?height=300&width=500" alt="Tecnologia">
-                                        <div class="news-category tech">Tecnologia</div>
-                                    </div>
-                                    <div class="news-content">
-                                        <h3>Cidade recebe internet de alta velocidade</h3>
-                                        <p>Projeto de fibra óptica chega aos bairros periféricos, democratizando o
-                                            acesso à internet de qualidade e impulsionando a inclusão digital.</p>
-                                        <div class="news-meta">
-                                            <span class="news-date"><i class="fas fa-calendar"></i> Date</span>
-                                            <span class="news-author"><i class="fas fa-user"></i> Repórtere</span>
-                                        </div>
-                                        <a href="#" class="read-more">Ler mais <i class="fas fa-arrow-right"></i></a>
-                                    </div>
-                                </article>
-                            </div>
-                        </div>
-                    </div>
+                            @endforeach
 
                     <!-- Progress Bar -->
                     <div class="news-progress">
@@ -1296,6 +1197,19 @@
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
             animation: shimmer 2s infinite;
+        }
+
+        .noimage { 
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f97316, #f5cc29);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 20px;
         }
 
         @keyframes shimmer {
