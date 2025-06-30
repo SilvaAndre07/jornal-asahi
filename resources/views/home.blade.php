@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -7,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jornal Asahi - Portal de Notícias de Assaí</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,12 +29,35 @@
                     <a href="{{ url('/news') }}" class="nav-link">Notícias</a>
                     <a href="https://valedosol.assai.pr.gov.br/" target="_blank" class="nav-link">Vale do Sol</a>
                     <a href="{{ url('/equipe') }}" class="nav-link">Equipe</a>
+                    @guest
                     <a href="{{ url('/login') }}" class="nav-link">Entrar</a>
-                </nav>
-                <div class="mobile-menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </div>
+                    @else
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ Auth::user()->name }}
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.show') }}">Perfil</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">Sair</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    @endguest
             </div>
+        </div>
+        </nav>
+        <div class="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        </div>
         </div>
     </header>
 
@@ -48,7 +71,11 @@
                         <div class="carousel-track">
                             <div class="carousel-slide active">
                                 <div class="slide-image">
-                            <img src="{{ asset('assets/noticias-bg.jpg') }}" alt="Notícias">
+                                    @foreach ($featuredNews as $item)
+                                    <div class="slide-image">
+                                        <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}">
+                                    </div>
+                                    @endforeach
                                 </div>
                                 <div class="slide-overlay">
                                     <div class="slide-content">
@@ -71,7 +98,7 @@
                                             jovens.
                                             Conheça oportunidades, participe de atividades e fique por dentro dos
                                             projetos que estão fazendo a diferença na sua cidade.</p>
-                                        <a href="#forum" class="btn btn-primary">Ver mais</a>
+                                        <a href="" class="btn btn-primary">Ver mais</a>
                                     </div>
                                 </div>
                             </div>
@@ -89,20 +116,21 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="carousel-slide">
-                                <div class="slide-image">
-                                    <img src="{{ asset('assets/enquete-bg.jpg') }}" alt="Enquetes">
-                                </div>
-                                <div class="slide-overlay">
-                                    <div class="slide-content">
-                                        <h3>Enquetes</h3>
-                                        <p>Participe das enquetes e dê sua opinião sobre temas importantes para o
-                                            desenvolvimento da cidade. Sua voz faz a diferença!</p>
-                                        <a href="#enquete" class="btn btn-primary">Responder</a>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- 
+                                                        <div class="carousel-slide">
+                                                            <div class="slide-image">
+                                                                <img src="{{ asset('assets/enquete-bg.jpg') }}" alt="Enquetes">
+                                                            </div>
+                                                            <div class="slide-overlay">
+                                                                <div class="slide-content">
+                                                                    <h3>Enquetes</h3>
+                                                                    <p>Participe das enquetes e dê sua opinião sobre temas importantes para o
+                                                                        desenvolvimento da cidade. Sua voz faz a diferença!</p>
+                                                                    <a href="#enquete" class="btn btn-primary">Responder</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                            -->
 
                             <div class="carousel-slide">
                                 <div class="slide-image">
@@ -160,19 +188,17 @@
                 <div class="news-slider-container">
                     <div class="news-slider" id="newsSlider">
                         <div class="news-track" id="newsTrack">
-                            <!-- Slide 1 -->
                             @foreach ($featuredNews as $index => $item)
                             <div class="news-slide {{ $index === 0 ? 'active' : '' }}">
                                 <article class="news-card featured">
                                     @if ($item->image)
                                     <div class="news-image">
-                                        <img src="{{ asset('storage/' . $item->$image ) }}" alt="{{ $item->title }}">
+                                        <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}">
                                     </div>
                                     @else
-                                    <div class="no-image">
+                                    <div class="noimage">
                                         <span>Sem imagem</span>
                                     </div>
-
                                     @endif
                                     <div class="news-content">
                                         <h3>{{ $item->title }}</h3>
@@ -184,21 +210,21 @@
                                         <a href="#" class="read-more">Ler mais <i class="fas fa-arrow-right"></i></a>
                                     </div>
                                 </article>
+                            </div>
                             @endforeach
+                        </div>
 
-                    <!-- Progress Bar -->
-                    <div class="news-progress">
-                        <div class="news-progress-bar" id="newsProgressBar"></div>
-                    </div>
+                        <!-- Progress Bar -->
+                        <div class="news-progress">
+                            <div class="news-progress-bar" id="newsProgressBar"></div>
+                        </div>
 
-                    <!-- Indicators -->
-                    <div class="news-indicators" id="newsIndicators">
-                        <button class="news-indicator active" data-slide="0"></button>
-                        <button class="news-indicator" data-slide="1"></button>
-                        <button class="news-indicator" data-slide="2"></button>
-                        <button class="news-indicator" data-slide="3"></button>
-                        <button class="news-indicator" data-slide="4"></button>
-                        <button class="news-indicator" data-slide="5"></button>
+                        <!-- Indicators -->
+                        <div class="news-indicators" id="newsIndicators">
+                            @foreach($featuredNews as $index => $item)
+                            <button class="news-indicator{{ $index == 0 ? ' active' : '' }}" data-slide="{{ $index }}"></button>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </section>
@@ -212,15 +238,45 @@
                         </div>
                         <div class="forum-text">
                             <h2>Fórum Jovem</h2>
+                            <div class="forum-description">
+                                <p>Participe do nosso fórum online e compartilhe suas ideias, dúvidas e sugestões com a comunidade jovem de Assaí. Um espaço para diálogo, aprendizado e construção coletiva.</p>
 
+                                <div class="forum-features">
+                                    <div class="feature-item">
+                                        <div class="feature-dot"></div>
+                                        <span>Acesso a Cursos Gratuitos</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-dot"></div>
+                                        <span>Oportunidades de Emprego</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-dot"></div>
+                                        <span>Networking</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-dot"></div>
+                                        <span>Auxílios</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-dot"></div>
+                                        <span>Workshops e Eventos</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <div class="feature-dot"></div>
+                                        <span>Carteirinha Exclusiva</span>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="forum-action">
-                                <button class="btn btn-primary forum-btn">
+                                <a href="https://valedosol.assai.pr.gov.br/forum-jovem/" class="forum-btn" target="_blank">
                                     <i class="fas fa-users"></i>
                                     Acessar Fórum
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
+                </div>
             </section>
 
             <!-- Gallery Section -->
@@ -230,76 +286,41 @@
                         <h2><i class="fas fa-camera"></i> Galeria de Fotos</h2>
                         <p>Visualize todas as imagens dos principais eventos da cidade</p>
                     </div>
-                    <a href="{{ url('/gallery') }}" class="view-all-btn">
+                    <a href="{{ route('gallery.index') }}" class="view-all-btn">
                         Ver todas <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
 
                 <div class="gallery-grid">
-                    <div class="gallery-item large" data-title="Evento na praça central">
-                        <img src="/placeholder.svg?height=400&width=600" alt="Evento na praça central">
+                    @if(isset($galleryImages) && $galleryImages->count() > 0)
+                    @foreach($galleryImages->take(9) as $image)
+                    <div class="gallery-item large" data-title="{{ $image->news->title ?? 'Sem título' }}">
+                        <img src="{{ asset('storage/' . $image->path) }}"
+                            alt="{{ $image->news->title ?? 'Imagem da notícia' }}"
+                            data-img-src="{{ asset('storage/' . $image->path) }}"
+                            data-news-title="{{ $image->news->title ?? 'Sem título' }}"
+                            data-news-url="{{ route('news.show', $image->news_id) }}">
                         <div class="gallery-overlay">
                             <div class="gallery-info">
-                                <h4>Evento na praça central</h4>
-                                <p>Celebração do aniversário da cidade</p>
-                                <span class="gallery-date">15 Jan 2024</span>
+                                <h4>{{ Str::limit($image->news->title ?? 'Sem título', 30) }}</h4>
+                                <a href="{{ route('news.show', $image->news_id) }}" class="stretched-link" aria-hidden="true"></a>
                             </div>
                         </div>
                     </div>
-
-                    <div class="gallery-item" data-title="Inauguração da escola">
-                        <img src="/placeholder.svg?height=300&width=400" alt="Inauguração da escola">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h4>Inauguração da escola</h4>
-                                <span class="gallery-date">12 Jan 2024</span>
-                            </div>
+                    @endforeach
+                    @else
+                    <div class="col-12">
+                        <div class="alert alert-light text-center" style="background:#f8fafc;color:#374151;padding:2rem;border-radius:12px;">
+                            Ainda não há imagens na galeria.
                         </div>
                     </div>
-
-                    <div class="gallery-item" data-title="Festival de música">
-                        <img src="/placeholder.svg?height=300&width=400" alt="Festival de música">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h4>Festival de música</h4>
-                                <span class="gallery-date">10 Jan 2024</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="gallery-item" data-title="Reunião da câmara">
-                        <img src="/placeholder.svg?height=300&width=400" alt="Reunião da câmara">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h4>Reunião da câmara</h4>
-                                <span class="gallery-date">08 Jan 2024</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="gallery-item" data-title="Obras na cidade">
-                        <img src="/placeholder.svg?height=300&width=400" alt="Obras na cidade">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h4>Obras na cidade</h4>
-                                <span class="gallery-date">05 Jan 2024</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="gallery-item" data-title="Evento esportivo">
-                        <img src="/placeholder.svg?height=300&width=400" alt="Evento esportivo">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h4>Evento esportivo</h4>
-                                <span class="gallery-date">03 Jan 2024</span>
-                            </div>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </section>
 
-            <!-- Polls Section -->
+
+
+            <!-- Polls Section 
             <section class="polls-section" id="enquete">
                 <div class="section-header centered">
                     <div class="section-title">
@@ -396,49 +417,66 @@
                     </div>
                 </div>
             </section>
+            -->
 
             <!-- Stream Section -->
-            <section class="stream-section">
+            <section class="stream-section" style="margin:0 auto;">
                 <div class="section-title">
                     <h2><i class="fas fa-video"></i>Tv Vale do Sol</h2>
                     <p style="margin-bottom: 30px;">Lives e vídeos novos direto pra você!</p>
 
-                    <div class="section-header">
+                    <div class="section-header" style="width:100%;display:flex;gap:2rem;align-items:stretch;width:1180px;">
                         <!---Div da Esquerda-->
-                        <div class="stream-title">
+                        <div class="stream-title" style="flex:1;display:flex;flex-direction:column;justify-content:stretch;height:100%;min-width:0;">
                             <h2><i class="fab fa-youtube"></i>Acesse nosso canal</h2>
                             <p>🎬 Vídeo em Destaque</p>
-                            <iframe width="560" height="315"
+                            <iframe width="640" height="360"
                                 src="https://www.youtube.com/embed/tsE2glEVIyE?si=YzMifivyq7NnOrn-"
                                 title="YouTube video player" frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                                style="width:100%;height:360px;min-height:240px;max-height:400px;object-fit:cover;border-radius:8px;"></iframe>
 
-                            <a href="https://www.youtube.com/@valedosolpr" target="_blank" rel="noopener noreferrer">
-
-                                <button class="botaoyoutubestream"> <i class="fas fa-bell"></i>Ver mais no
-                                    canal</button>
+                            <a href="https://www.youtube.com/@valedosolpr" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">
+                                <button class="botaoyoutubestream"> <i class="fas fa-bell"></i>Ver mais no canal</button>
                             </a>
                         </div>
                         <!---Div da Direita-->
-
-                        <div class="live-title">
+                        <div class="live-title" style="flex:1;display:flex;flex-direction:column;justify-content:stretch;height:555px;min-width:0;">
+                            @if(isset($activeLiveStream) && $activeLiveStream)
                             <h2><i class="fa-solid fa-broadcast-tower"></i> Ao Vivo</h2>
-
                             <p>Assista agora a nossa transmissão ao vivo!</p>
-                            <iframe width="560" height="315"
-                                src="https://www.youtube.com/embed/KbqaZPaoyWQ?si=KtujP1PedCPv48sP"
-                                title="YouTube video player" frameborder="0"
+                            <iframe width="640" height="360"
+                                src="https://www.youtube.com/embed/{{ $activeLiveStream->youtube_video_id }}?autoplay=0&rel=0"
+                                title="{{ $activeLiveStream->title }}"
+                                frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <a href="https://www.youtube.com/live/JHw3PSFNw0g?si=3yUZ4wq59lw3jUu5 " target="_blank">
-                                <button class="botaoyoutubestream"><i class="fab fa-youtube"></i> Assista no
-                                    Youtube</button>
+                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                                style="width:100%;height:360px;min-height:240px;max-height:400px;object-fit:cover;border-radius:8px;"></iframe>
+                            <div class="mt-2 mb-2">
+                                <span class="badge bg-danger" style="background:#ef4444;color:white;padding:0.4em 1em;border-radius:12px;font-size:0.95em;">
+                                    <i class="fas fa-circle" style="font-size:0.7em;margin-right:0.4em;"></i> AO VIVO
+                                </span>
+                                <span class="ml-2" style="color:#6b7280;font-size:0.95em;">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    {{ \Carbon\Carbon::parse($activeLiveStream->start_time)->format('d/m/Y') }}
+                                </span>
+                            </div>
+                            <a href="https://www.youtube.com/watch?v={{ $activeLiveStream->youtube_video_id }}" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">
+                                <button class="botaoyoutubestream"><i class="fab fa-youtube"></i> Assistir no YouTube</button>
                             </a>
+                            <h3 class="card-title h6 mt-2 mb-0" style="font-weight:600;">{{ Str::limit($activeLiveStream->title, 40) }}</h3>
+                            @else
+                            <h2><i class="fa-solid fa-broadcast-tower"></i> Transmissões</h2>
+                            <p>Nenhuma transmissão ao vivo no momento</p>
+                            <div class="divAoVivo2 text-center" style="background:#f8fafc;">
+                                <i class="fas fa-video-slash text-muted mb-3" style="font-size:2rem;"></i>
+                                <h3 class="h6 mb-2" style="font-weight:600;">Nenhuma transmissão ao vivo</h3>
+                            </div>
+                            @endif
                         </div>
                     </div>
-
-
+                </div>
             </section>
 
 
@@ -450,79 +488,82 @@
                         <h2><i class="fas fa-microphone"></i> Entrevistas Exclusivas</h2>
                         <p>Conversas com personalidades e autoridades da cidade</p>
                     </div>
-                    <a href="{{ url('/entrevistas') }}" class="view-all-btn">
+                    <a href="{{ route('interviews.list') }}" class="view-all-btn">
                         Ver todas <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
 
+                @if(isset($featuredInterview) && $featuredInterview)
                 <div class="interviews-grid">
                     <div class="interview-card featured">
-                        <div class="video-thumbnail">
-                            <img src="/placeholder.svg?height=300&width=500" alt="Entrevista com Prefeito">
-                            <div class="play-overlay">
-                                <i class="fas fa-play"></i>
-                            </div>
-                            <div class="video-duration">15:32</div>
+                        <div class="video-thumbnail" style="cursor:pointer;" onclick="window.open('https://www.youtube.com/watch?v={{ $featuredInterview->youtube_video_id }}','_blank')">
+                            <iframe
+                                src="https://www.youtube.com/embed/{{ $featuredInterview->youtube_video_id }}?rel=0"
+                                title="{{ $featuredInterview->title }}"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                                style="width:100%;height:100%;border-radius:8px;object-fit:cover;"></iframe>
                         </div>
                         <div class="interview-content">
-                            <div class="interview-category">Política</div>
-                            <h3>Entrevista com o Prefeito sobre os novos projetos para 2024</h3>
+                            <div class="interview-category">{{ $featuredInterview->category ?? 'Entrevista' }}</div>
+                            <h3>{{ $featuredInterview->title }}</h3>
+                            @if($featuredInterview->interviewee)
                             <p class="interviewee">
                                 <i class="fas fa-user"></i>
-                                João Silva - Prefeito Municipal
+                                {{ $featuredInterview->interviewee }}
                             </p>
-                            <p class="description">Uma conversa detalhada sobre os planos para o desenvolvimento da
-                                cidade, incluindo investimentos em educação, saúde e infraestrutura.</p>
+                            @endif
+                            <p class="description">{{ Str::limit($featuredInterview->description, 150) }}</p>
                             <div class="interview-stats">
-                                <span class="views"><i class="fas fa-eye"></i> 2.3k visualizações</span>
-                                <span class="date"><i class="fas fa-calendar"></i> 10/01/2024</span>
+                                <span class="views"><i class="fas fa-eye"></i> {{ $featuredInterview->views ?? '—' }} visualizações</span>
+                                <span class="date"><i class="fas fa-calendar"></i> {{ $featuredInterview->interview_date ? $featuredInterview->interview_date->format('d/m/Y') : 'Data não definida' }}</span>
                             </div>
                         </div>
                     </div>
-
+                    @if(isset($latestInterviews) && count($latestInterviews))
+                    @foreach($latestInterviews->take(2) as $interview)
                     <div class="interview-card">
-                        <div class="video-thumbnail">
-                            <img src="/placeholder.svg?height=200&width=350" alt="Entrevista Educação">
+                        <div class="video-thumbnail" style="cursor:pointer;" onclick="window.open('https://www.youtube.com/watch?v={{ $interview->youtube_video_id }}','_blank')">
+                            <img src="https://img.youtube.com/vi/{{ $interview->youtube_video_id }}/mqdefault.jpg" alt="{{ $interview->title }}">
                             <div class="play-overlay">
                                 <i class="fas fa-play"></i>
                             </div>
-                            <div class="video-duration">12:45</div>
+                            <div class="video-duration">{{ $interview->duration ?? '' }}</div>
                         </div>
                         <div class="interview-content">
-                            <div class="interview-category education">Educação</div>
-                            <h3>Diretora de Educação fala sobre reformas nas escolas</h3>
+                            <div class="interview-category {{ $interview->category ? strtolower($interview->category) : '' }}">{{ $interview->category ?? 'Entrevista' }}</div>
+                            <h3>{{ Str::limit($interview->title, 60) }}</h3>
+                            @if($interview->interviewee)
                             <p class="interviewee">
                                 <i class="fas fa-user"></i>
-                                Maria Santos - Diretora de Educação
+                                {{ $interview->interviewee }}
                             </p>
+                            @endif
+                            <p class="description">{{ Str::limit($interview->description, 80) }}</p>
                             <div class="interview-stats">
-                                <span class="views"><i class="fas fa-eye"></i> 1.8k visualizações</span>
-                                <span class="date"><i class="fas fa-calendar"></i> 08/01/2024</span>
+                                <span class="views"><i class="fas fa-eye"></i> {{ $interview->views ?? '—' }} visualizações</span>
+                                <span class="date"><i class="fas fa-calendar"></i> {{ $interview->interview_date ? $interview->interview_date->format('d/m/Y') : 'Data não definida' }}</span>
                             </div>
                         </div>
                     </div>
+                    @endforeach
+                    @endif
+                </div>
+                @else
+                <div class="interviews-grid">
+                    <div class="col-12">
+                        <div class="alert alert-info" style="background:#f8fafc;color:#374151;padding:2rem;border-radius:12px;">
+                            Nenhuma entrevista disponível no momento.
+                        </div>
+                    </div>
+                </div>
+                @endif
 
-                    <div class="interview-card">
-                        <div class="video-thumbnail">
-                            <img src="/placeholder.svg?height=200&width=350" alt="Entrevista Empresário">
-                            <div class="play-overlay">
-                                <i class="fas fa-play"></i>
-                            </div>
-                            <div class="video-duration">18:20</div>
-                        </div>
-                        <div class="interview-content">
-                            <div class="interview-category economy">Economia</div>
-                            <h3>Empresário local fala sobre desenvolvimento econômico</h3>
-                            <p class="interviewee">
-                                <i class="fas fa-user"></i>
-                                Carlos Oliveira - Empresário
-                            </p>
-                            <div class="interview-stats">
-                                <span class="views"><i class="fas fa-eye"></i> 1.2k visualizações</span>
-                                <span class="date"><i class="fas fa-calendar"></i> 05/01/2024</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="text-center mt-3 d-md-none">
+                    <a href="{{ route('interviews.list') }}" class="btn btn-primary">
+                        Ver todas as entrevistas
+                    </a>
                 </div>
             </section>
 
@@ -623,8 +664,8 @@
                 <div class="footer-section">
                     <h4>Contato</h4>
                     <div class="contact-info">
-                        <p><i class="fas fa-envelope"></i> contato@jornalasahi.com.br</p>
-                        <p><i class="fas fa-phone"></i> (43) 9999-9999</p>
+                        <p><i class="fas fa-envelope"></i>secti@assai.pr.gov.br</p>
+                        <p><i class="fas fa-phone"></i> (43)3262-8306</p>
                         <p><i class="fas fa-map-marker-alt"></i> Assaí - PR</p>
                     </div>
                 </div>
@@ -1199,7 +1240,7 @@
             animation: shimmer 2s infinite;
         }
 
-        .noimage { 
+        .noimage {
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg, #f97316, #f5cc29);
@@ -1356,12 +1397,12 @@
             .carousel-next {
                 right: 1px;
             }
-            
-            .carousel{
+
+            .carousel {
                 height: 750px;
             }
 
-            }
+        }
 
         @media (max-width: 480px) {
             .news-slider {
@@ -1390,125 +1431,308 @@
 
         /* Forum Section */
         .forum-section {
-            margin-bottom: 4rem;
+            padding: 40px 10px;
+            display: flex;
+            align-items: center;
+            position: relative;
+           
+        }
+
+        .forum-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
         }
 
         .forum-container {
-            background: linear-gradient(135deg, #f97316, #f5cc29);
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .forum-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
-            padding: 3rem;
-            color: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            min-height: 500px;
+        }
+
+        .forum-icon {
+          background:linear-gradient(135deg, #f97316, #f5cc29);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
             overflow: hidden;
         }
 
-        .forum-container::before {
-            content: "";
+        .forum-icon::before {
+            content: '';
             position: absolute;
             top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            pointer-events: none;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            animation: float 6s ease-in-out infinite;
         }
 
-        .forum-content {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 2rem;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .forum-icon {
+        .forum-icon i {
             font-size: 4rem;
-            opacity: 0.9;
+            color: white;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .forum-text {
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .forum-text h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-size: 2.8rem;
             font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            position: relative;
         }
 
-        .forum-text p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            opacity: 0.95;
-            line-height: 1.6;
+        .forum-text h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #f97316, #f5cc29);
+            border-radius: 2px;
         }
 
-        .forum-stats {
+        .forum-description {
+            margin-bottom: 40px;
+        }
+
+        .forum-description p {
+            font-size: 1.2rem;
+            color: #5a6c7d;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .forum-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .feature-item {
             display: flex;
-            gap: 2rem;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #6c757d;
         }
 
-        .stat {
-            text-align: center;
+        .feature-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background:
         }
 
-        .stat-number {
-            display: block;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .stat-label {
-            font-size: 0.875rem;
-            opacity: 0.8;
+        .forum-action {
+            margin-top: auto;
         }
 
         .forum-btn {
-            background: white;
-            color: #f97316;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #f97316, #f5cc29);;
+            color: white;
+            text-decoration: none;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-weight: 600;
             font-size: 1.1rem;
-            padding: 1rem 2rem;
-            white-space: nowrap;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .forum-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .forum-btn:hover::before {
+            left: 100%;
         }
 
         .forum-btn:hover {
-            background: #f8fafc;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .forum-btn i {
+            font-size: 1.2rem;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .forum-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .forum-icon {
+                padding: 40px;
+            }
+
+            .forum-icon i {
+                font-size: 3rem;
+            }
+
+            .forum-text {
+                padding: 40px 30px;
+            }
+
+            .forum-text h2 {
+                font-size: 2.2rem;
+            }
+
+            .forum-description p {
+                font-size: 1.1rem;
+            }
+
+            .forum-features {
+                grid-template-columns: 1fr;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .forum-section {
+                padding: 40px 15px;
+            }
+
+            .forum-text {
+                padding: 30px 20px;
+            }
+
+            .forum-text h2 {
+                font-size: 1.8rem;
+            }
+
+            .forum-btn {
+                padding: 15px 25px;
+                font-size: 1rem;
+            }
         }
 
         /* Gallery Section */
         .gallery-section {
-            margin-bottom: 4rem;
+            padding: 80px 0;
+            position: relative;
         }
+
+        .gallery-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23000" opacity="0.02"/><circle cx="75" cy="75" r="1" fill="%23000" opacity="0.02"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 50px;
+            gap: 20px;
+        }
+
+
+
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(3, 200px);
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            grid-auto-rows: 250px;
         }
 
         .gallery-item {
             position: relative;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .gallery-item.large {
+        .gallery-item.featured {
             grid-column: span 2;
             grid-row: span 2;
         }
 
         .gallery-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
         }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease;
         }
 
         .gallery-item:hover img {
@@ -1517,36 +1741,182 @@
 
         .gallery-overlay {
             position: absolute;
-            inset: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom,
+                    transparent 0%,
+                    transparent 40%,
+                    rgba(0, 0, 0, 0.3) 70%,
+                    rgba(0, 0, 0, 0.8) 100%);
             display: flex;
             align-items: flex-end;
-            padding: 1rem;
+            padding: 25px;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .gallery-item:hover .gallery-overlay {
             opacity: 1;
         }
 
-        .gallery-info h4 {
+        .gallery-info {
             color: white;
-            font-size: 1rem;
+            width: 100%;
+        }
+
+        .gallery-info h4 {
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 0.25rem;
+            margin: 0 0 8px 0;
+            line-height: 1.3;
         }
 
-        .gallery-info p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
+        .view-more {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            font-weight: 500;
         }
 
-        .gallery-date {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.75rem;
+        .stretched-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
         }
+
+        .empty-gallery {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #374151;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .gallery-section {
+                padding: 60px 0;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+                margin-bottom: 40px;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+
+            .section-title h2 i {
+                font-size: 1.5rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                grid-auto-rows: 200px;
+            }
+
+            .gallery-item.featured {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+
+            .gallery-overlay {
+                opacity: 1;
+                background: linear-gradient(to bottom, transparent 0%, transparent 50%, rgba(0, 0, 0, 0.7) 100%);
+                padding: 20px;
+            }
+
+            .gallery-info h4 {
+                font-size: 1rem;
+            }
+
+            .view-more {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+
+            .gallery-grid {
+                grid-auto-rows: 180px;
+            }
+
+            .empty-state {
+                padding: 40px 20px;
+            }
+
+            .empty-state i {
+                font-size: 3rem;
+            }
+
+            .empty-state h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Animações suaves */
+        @media (prefers-reduced-motion: reduce) {
+
+            .gallery-item,
+            .gallery-item img,
+            .gallery-overlay,
+            .view-all-btn {
+                transition: none;
+            }
+
+            .gallery-item:hover {
+                transform: none;
+            }
+
+            .gallery-item:hover img {
+                transform: none;
+            }
+        }
+
 
         /* Polls Section */
         .polls-section {
@@ -1886,87 +2256,95 @@
         /* MOBILE RESPONSIVE */
         @media (max-width: 1024px) {
             .stream-section {
-            flex-direction: column;
-            gap: 1.5rem;
-            align-items: center;
-            justify-content: center;
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: center;
+                justify-content: center;
             }
+
             .stream-title,
             .live-title {
-            width: 100%;
-            max-width: 600px;
-            padding: 1.5rem;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+                width: 100%;
+                max-width: 600px;
+                padding: 1.5rem;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
+
             .stream-title iframe,
             .live-title iframe {
-            width: 100% !important;
-            height: 300px !important;
-            display: block;
-            margin: 0 auto;
+                width: 100% !important;
+                height: 300px !important;
+                display: block;
+                margin: 0 auto;
             }
         }
 
         @media (max-width: 768px) {
             .stream-section {
-            flex-direction: column;
-            gap: 1rem;
-            align-items: center;
-            justify-content: center;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+                justify-content: center;
             }
+
             .stream-title,
             .live-title {
-            padding: 1rem;
-            max-width: 100%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+                padding: 1rem;
+                max-width: 100%;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
+
             .stream-title h2,
             .live-title h2 {
-            font-size: 1.25rem;
-            text-align: center;
+                font-size: 1.25rem;
+                text-align: center;
             }
+
             .stream-title iframe,
             .live-title iframe {
-            width: 100% !important;
-            height: 220px !important;
-            display: block;
-            margin: 0 auto;
+                width: 100% !important;
+                height: 220px !important;
+                display: block;
+                margin: 0 auto;
             }
         }
 
         @media (max-width: 480px) {
             .stream-section {
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: center;
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: center;
+                justify-content: center;
             }
+
             .stream-title,
             .live-title {
-            padding: 0.5rem;
-            max-width: 100%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+                padding: 0.5rem;
+                max-width: 100%;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
+
             .stream-title h2,
             .live-title h2 {
-            font-size: 1rem;
-            text-align: center;
+                font-size: 1rem;
+                text-align: center;
             }
+
             .stream-title iframe,
             .live-title iframe {
-            width: 100% !important;
-            height: 160px !important;
-            display: block;
-            margin: 0 auto;
+                width: 100% !important;
+                height: 160px !important;
+                display: block;
+                margin: 0 auto;
             }
         }
 
@@ -2777,7 +3155,7 @@
 
         // Smooth scroll for navigation links
         document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-            anchor.addEventListener("click", function (e) {
+            anchor.addEventListener("click", function(e) {
                 e.preventDefault()
                 const target = document.querySelector(this.getAttribute("href"))
                 if (target) {
@@ -2828,8 +3206,9 @@
                             forumObserver.unobserve(entry.target)
                         }
                     })
+                }, {
+                    threshold: 0.5
                 },
-                { threshold: 0.5 },
             )
 
             forumObserver.observe(forumSection)
@@ -2838,7 +3217,7 @@
         // Add loading states for buttons
         document.querySelectorAll(".btn").forEach((btn) => {
             if (!btn.classList.contains("poll-submit")) {
-                btn.addEventListener("click", function (e) {
+                btn.addEventListener("click", function(e) {
                     if (this.getAttribute("href") === "#" || !this.getAttribute("href")) {
                         e.preventDefault()
 
@@ -3038,10 +3417,9 @@
                 }
             })
         }
-
-
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

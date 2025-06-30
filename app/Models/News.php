@@ -9,7 +9,7 @@ class News extends Model
     protected $fillable = [
         'title',
         'content',
-        'image',
+        'image', // Renomeado para 'image' após migração
         'author_id',
         'approved',
         'approved_by',
