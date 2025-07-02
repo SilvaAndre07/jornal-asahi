@@ -575,7 +575,7 @@
                             <h2><i class="fas fa-users"></i> Nossa Equipe de Repórteres</h2>
                             <p>Estudantes do ensino fundamental e médio levando informação de qualidade para toda a
                                 comunidade de Assaí.</p>
-                            <div class="team-highlights">
+                            <!--<div class="team-highlights">
                                 <div class="highlight">
                                     <i class="fas fa-graduation-cap"></i>
                                     <span>Quantidade de Repórteres</span>
@@ -588,7 +588,7 @@
                                     <i class="fas fa-award"></i>
                                     <span>Prêmios</span>
                                 </div>
-                            </div>
+                            </div>-->
                             <button class="btn btn-primary" onclick="window.location.href='{{ url('/equipe') }}'">
                                 <i class="fas fa-info-circle"></i>
                                 Conheça a Equipe
@@ -639,39 +639,48 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
+    <footer class="footer bg-gray-900 text-white w-full pt-12 pb-4">
+        <div class="container mx-auto px-4">
+            <div class="footer-content grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-8">
                 <div class="footer-section">
-                    <div class="footer-logo">
+                    <div class="footer-logo flex items-center gap-3 mb-4">
                         <div class="logo-text">
-                            <h3>Jornal Asahi</h3>
+                            <h3 class="text-xl font-bold">Jornal Asahi</h3>
                         </div>
                     </div>
-                    <p>Jornal municipal administrado por estudantes do ensino médio e fundamental da cidade de Assaí,
-                        focado em notícias, cultura e eventos para os jovens da comunidade.</p>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Jornal municipal administrado por estudantes do ensino médio e fundamental da cidade de Assaí,
+                        focado em notícias, cultura e eventos para os jovens da comunidade.
+                    </p>
                 </div>
-
                 <div class="footer-section">
-                    <h4>Links Rápidos</h4>
-                    <ul>
-                        <li><a href="#inicio">Início</a></li>
-                        <li><a href="#noticias">Notícias</a></li>
-                        <li><a href="#galeria">Galeria</a></li>
-                        <li><a href="#entrevistas">Entrevistas</a></li>
+                    <h4 class="font-semibold mb-4 text-white">Links Rápidos</h4>
+                    <ul class="list-none">
+                        <li class="mb-2">
+                            <a href="#inicio" class="text-gray-400 hover:text-orange-500 transition-colors duration-300 no-underline">Início</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#noticias" class="text-gray-400 hover:text-orange-500 transition-colors duration-300 no-underline">Notícias</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#galeria" class="text-gray-400 hover:text-orange-500 transition-colors duration-300 no-underline">Galeria</a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#entrevistas" class="text-gray-400 hover:text-orange-500 transition-colors duration-300 no-underline">Entrevistas</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Contato</h4>
+                    <h4 class="font-semibold mb-4 text-white">Contato</h4>
                     <div class="contact-info">
-                        <p><i class="fas fa-envelope"></i>secti@assai.pr.gov.br</p>
-                        <p><i class="fas fa-phone"></i> (43)3262-8306</p>
-                        <p><i class="fas fa-map-marker-alt"></i> Assaí - PR</p>
+                        <p class="text-gray-400 mb-2 flex items-center gap-2"><i class="fas fa-envelope"></i>secti@assai.pr.gov.br</p>
+                        <p class="text-gray-400 mb-2 flex items-center gap-2"><i class="fas fa-phone"></i> (43)3262-8306</p>
+                        <p class="text-gray-400 mb-2 flex items-center gap-2"><i class="fas fa-map-marker-alt"></i> Assaí - PR</p>
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Jornal Asahi. Todos os direitos reservados.</p>
+            <div class="footer-bottom border-t border-gray-800 pt-4 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
+                <p class="mb-2 md:mb-0">&copy; 2025 Jornal Asahi. Todos os direitos reservados.</p>
                 <span>Desenvolvido pela Secretaria de Ciência, Tecnologia e Inovação.</span>
             </div>
         </div>
@@ -1435,7 +1444,7 @@
             display: flex;
             align-items: center;
             position: relative;
-           
+
         }
 
         .forum-section::before {
@@ -1467,7 +1476,7 @@
         }
 
         .forum-icon {
-          background:linear-gradient(135deg, #f97316, #f5cc29);
+            background: linear-gradient(135deg, #f97316, #f5cc29);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1560,7 +1569,8 @@
             display: inline-flex;
             align-items: center;
             gap: 12px;
-            background: linear-gradient(135deg, #f97316, #f5cc29);;
+            background: linear-gradient(135deg, #f97316, #f5cc29);
+            ;
             color: white;
             text-decoration: none;
             padding: 18px 35px;
@@ -2457,14 +2467,16 @@
         .team-image {
             position: relative;
             height: 400px;
-            margin-right: 2rem;
+
         }
 
         .team-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 8px;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            box-shadow: #1f2937;
         }
 
         .team-badge {
@@ -2482,80 +2494,7 @@
             box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
         }
 
-        /* Footer */
-        .footer {
-            background: #1f2937;
-            color: white;
-            padding: 3rem 0 1rem;
-            width: 100%;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .footer-logo h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
-
-        .footer-section p {
-            color: #9ca3af;
-            font-size: 0.875rem;
-            line-height: 1.6;
-        }
-
-        .footer-section h4 {
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: white;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-section ul li a {
-            color: #9ca3af;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section ul li a:hover {
-            color: #f97316;
-        }
-
-        .contact-info p {
-            color: #9ca3af;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid #374151;
-            padding-top: 1rem;
-            text-align: center;
-            color: #9ca3af;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        ]
 
         /* Modal */
         .modal {
