@@ -587,7 +587,7 @@
                                 <div class="highlight">
                                     <i class="fas fa-award"></i>
                                     <span>Prêmios</span>
-                                </div>
+                                </div>//
                             </div>-->
                             <button class="btn btn-primary" onclick="window.location.href='{{ url('/equipe') }}'">
                                 <i class="fas fa-info-circle"></i>
